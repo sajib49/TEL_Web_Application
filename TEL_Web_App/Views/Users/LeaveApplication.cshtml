@@ -1,5 +1,5 @@
-﻿@model TEL_Web_App.Models.Employee
-@model TEL_Web_App.Models.User
+﻿@model TEL_Web_App.Models.AllModels
+
 
 @{
     ViewBag.Title = "LeaveApplication";
@@ -44,7 +44,7 @@
                 <td><label>Strat Date</label></td>
                 <td>
                     <div class="input-group date" data-provide="datepicker" id="datepicker">
-                       <input type='text' class="form-control" id="startDate"/>
+                       @Html.EditorFor(model => model.EmployeeLeave.LeaveStartDate, new { htmlAttributes = new { @id = "startDate", @class = "form-control" } })
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar">
                             </span>
@@ -54,7 +54,7 @@
                 <td><label>End Date</label></td>
                 <td>
                     <div class="input-group date" data-provide="datepicker" id="datepicker">
-                        <input type='text' class="form-control" id="endDate">
+                        @Html.EditorFor(model => model.EmployeeLeave.LeaveStartDate, new { htmlAttributes = new { @id = "endDate", @class = "form-control" } })  @*<input type='text' class="form-control" id="endDate">*@
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar">
                             </span>
@@ -62,19 +62,19 @@
                     </div>
                 </td>
                 <td><label>Number of Days: </label></td>
-                <td><input type="text" class="form-control" readonly id="noOfDays"/></td>
+                <td>@Html.EditorFor(model => model.EmployeeLeave.LeaveEndDate, new { htmlAttributes = new { @class="form-control",@id = "noOfDays", disabled = "disabled", @readonly = "readonly" } })@*<input type="text" class="form-control" readonly id="noOfDays"/>*@</td>
             </tr>
 
             <tr>
                 <td><label>Address</label></td>
-                <td colspan="5"><input type="text" class="form-control" /></td>
+                <td colspan="5">@Html.EditorFor(model=>model.EmployeeLeave.Address, new{htmlAttributes=new{@class="form-control"}}) @*<input type="text" class="form-control"/*@> </td>
             </tr>
 
             <tr>
                 <td><label>Mobile No </label></td>
-                <td> <input type="text" class="form-control" /></td>
+                <td> @Html.EditorFor(model => model.EmployeeLeave.MobileNo, new { htmlAttributes = new { @class = "form-control" } }) @*<input type="text" class="form-control" />*@</td>
                 <td><label>Email Address </label></td>
-                <td colspan="3"> <input type="text" class="form-control" /></td>
+                <td colspan="3"> @Html.EditorFor(model => model.EmployeeLeave.Emailaddress, new { htmlAttributes = new { @class = "form-control" } }) @*<input type="text" class="form-control" />*@</td>
             </tr>
         </table>
 

@@ -202,6 +202,27 @@ namespace TEL_Web_App.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LeaveApplication(EmployeeLeave anEmployeeLeave)
         {
+
+            //using (SqlConnection connection = new SqlConnection(Connection.ConnectionString()))
+            //{
+            //    connection.Open();
+            //    using (SqlCommand command = new SqlCommand("INSERT INTO t_EmployeeLeaveTemp VALUES('" + anEmployeeLeave. + "')", connection))
+            //    {
+
+            //        using (SqlDataReader leaveReader = command.ExecuteReader())
+            //        {
+            //            while (leaveReader.Read())
+            //            {
+            //                Employee aEmployee = new Employee();
+            //                aEmployee.EmployeeID = int.Parse(leaveReader["EmployeeID"].ToString());
+            //                aEmployee.EmployeeName = leaveReader["EmployeeName"].ToString();
+            //                employeeList.Add(aEmployee);
+            //            }
+            //        }
+            //        connection.Close();
+            //    }
+            //}
+
             return View();
         }
 
