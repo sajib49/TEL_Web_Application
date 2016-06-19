@@ -196,5 +196,14 @@ namespace TEL_Web_App.Controllers
             return Json(anEmployee, JsonRequestBehavior.AllowGet);
 
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LeaveApplication(EmployeeLeave anEmployeeLeave)
+        {
+            return View();
+        }
+
     }
 }
