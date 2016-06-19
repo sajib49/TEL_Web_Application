@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/themes/base/css")
+    <link href="~/Content/bootstrap-datepicker.css" rel="stylesheet"/>
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+</head>
+<body style="background-color: burlywood">
+    Layout 1
+    @RenderBody()
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundle/bootstrap")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable();
+           $('#datepicker').datetimepicker({
+               format: 'mm/dd/yyyy'
+           });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Welcome";
+}
+@{
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+}
+
+@if (Session["LogedUserName"] != null)
+{
+    <text>
+       <h1>Welcome @Session["LogedUserName"].ToString()</h1> 
+    </text>
+}
+<a href="@Url.Action("LeaveApplication", "Users", new { id = @Session["LogedUserName"].ToString()})">
+    <span>Leave Application</span>
+</a>|
+
+
+@Html.ActionLink("Log Out","LogOut","Users")

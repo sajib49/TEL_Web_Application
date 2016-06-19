@@ -1,0 +1,202 @@
+﻿@model TEL_Web_App.Models.Employee
+
+@{
+    ViewBag.Title = "LeaveApplication";
+}
+
+<style>
+    .employeeDetails {
+        color: green;
+        font-weight: bolder;
+    }
+</style>
+
+<h2 style="text-align: center">Leave Application</h2>
+
+@using (@Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <table class="table">
+            <tr>
+                <td><label>Employee Code </label></td>
+                <td class="employeeDetails">@ViewBag.aEmployee.EmployeeCode @*@Html.DisplayFor(model => model.EmployeeCode)*@</td>
+                <td><label>Designation </label></td>
+                <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.Designation @*@Html.DisplayFor(model=>model.Designation)*@</td>
+            </tr>
+
+            <tr>
+                <td><label>Employee Name </label></td>
+                <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.EmployeeName @*@Html.DisplayFor(model => model.EmployeeName)*@</td>
+                <td><label>Department </label></td>
+                <td class="employeeDetails">@ViewBag.aEmployee.Department @*@Html.DisplayFor(model => model.Department*@</td>
+            </tr>
+
+            <tr>
+                <td><label>Leave Type</label></td>
+                <td>@Html.DropDownList("LeaveList", null, "---Select Leave Type---", htmlAttributes: new { @class = "form-control" })</td>
+                <td><label>Reason</label></td>
+                <td>@Html.DropDownList("LeaveReasonList", null, "---Select Leave Reason---", htmlAttributes: new { @class = "form-control" })</td>
+                <td colspan="2"><input name="leaveNature" type="radio" />Full Day<input name="leaveNature" type="radio" />1st Half<input name="leaveNature" type="radio" />2nd Half</td>
+            </tr>
+            <tr>
+                <td><label>Strat Date</label></td>
+                <td>
+                    <div class="input-group date" data-provide="datepicker" id="datepicker">
+                        <input type='text' class="form-control" id="startDate"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar">
+                            </span>
+                        </span>
+                    </div>
+                </td>
+                <td><label>End Date</label></td>
+                <td>
+                    <div class="input-group date" data-provide="datepicker" id="datepicker">
+                        <input type='text' class="form-control" id="endDate">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar">
+                            </span>
+                        </span>
+                    </div>
+                </td>
+                <td><label>Number of Days: </label></td>
+                <td><input type="text" class="form-control" readonly id="noOfDays"/></td>
+            </tr>
+
+            <tr>
+                <td><label>Address</label></td>
+                <td colspan="5"><input type="text" class="form-control" /></td>
+            </tr>
+
+            <tr>
+                <td><label>Mobile No </label></td>
+                <td> <input type="text" class="form-control" /></td>
+                <td><label>Email Address </label></td>
+                <td colspan="3"> <input type="text" class="form-control" /></td>
+            </tr>
+        </table>
+
+        <fieldset>
+            <legend>Employee Leave Balance</legend>
+            <table id="example">
+                <thead>
+                    <tr>
+                        <th>Leave Type</th>
+                        <th>Total Allowed</th>
+                        <th>Utilized Till Date</th>
+                        <th>Proposed</th>
+                        <th>Total Utilized</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>InChargeInfo</legend>
+            <table class="table">
+                <tr>
+                    <td><label>InCharge</label></td>
+                    <td>@Html.DropDownList("departmentWiseEmployees", null, "---Select In Charge---", htmlAttributes: new { @class = "form-control", id = "inChargeEmployee" })</td>
+                    <td><label>Designation</label></td>
+                    <td><input class="form-control" type="text" readonly id="employeeDesignation"/></td>
+                </tr>
+                <tr>
+                    <td><label>EmpCode</label></td>
+                    <td><input class="form-control" readonly type="text" id="employeeCode"/></td>
+                    <td><label>Deapartment</label></td>
+                    <td><input class="form-control" readonly type="text" id="employeeDepartment" /></td>
+                </tr>
+                <tr>
+                    <td><label>Mobile No:</label></td>
+                    <td><input class="form-control" type="text" readonly id="employeeMobile"/></td>
+                    <td><label>Email</label></td>
+                    <td><input class="form-control" type="text" readonly id="employeeEmail"/></td>
+                </tr>
+            </table>
+        </fieldset>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input type="submit" value="Save" class="btn btn-primary btn-lg btn-block" />
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+
+    <script>
+        $(document).ready(function() {
+            $("#inChargeEmployee").change(function() {
+                var employeeId = $("#inChargeEmployee").val();
+                var jsnFormatData = { EmployeeID: employeeId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetEmployeeByEmployeeId", "Users")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(jsnFormatData),
+                    dataType: "json",
+                    success: function(data) {
+                        $("#employeeDesignation").val(data.Designation);
+                        $("#employeeCode").val(data.EmployeeCode);
+                        $("#employeeDepartment").val(data.Department);
+                        $("#employeeMobile").val(data.MobileNo);
+                        $("#employeeEmail").val(data.MobileNo);
+                    }
+                });
+                if (employeeId == 0) {
+                    $("#employeeDesignation").val("");
+                    $("#employeeCode").val("");
+                    $("#employeeDepartment").val("");
+                    $("#employeeMobile").val("");
+                    $("#employeeEmail").val("");
+                }
+            });
+
+           
+             $("#startDate, #endDate").change(function () {
+
+                 Date.prototype.addDays = function (days) {
+                     var date = new Date(this.valueOf());
+                     date.setDate(date.getDate() + days);
+                     return date;
+                 }
+
+                 function getBusinessDatesCount(startDate, endDate) {
+                     var count = 0;
+                     var curDate = startDate;
+                     while (curDate <= endDate) {
+                         var dayOfWeek = curDate.getDay();
+                         var isWeekend = (dayOfWeek == 5);
+                         if (!isWeekend)
+                             count++;
+                         curDate = curDate.addDays(1);
+                     }
+                     return count;
+                 }
+
+
+                 var d1 = document.getElementById("startDate").value;
+                 var d2 = document.getElementById("endDate").value;
+                 
+                 var startDate = new Date(d1);
+                 var endDate = new Date(d2);
+                 var numOfDays = getBusinessDatesCount(startDate, endDate);
+                 //alert(numOfDays);
+                 $("#noOfDays").val(numOfDays);
+             });
+
+
+        });
+    </script>
+}
+
+
+
+
+
+
+

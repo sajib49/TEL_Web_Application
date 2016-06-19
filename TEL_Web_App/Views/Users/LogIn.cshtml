@@ -1,0 +1,63 @@
+﻿@using System.Web.UI.WebControls
+@model TEL_Web_App.Models.User
+
+@{
+    ViewBag.Title = "LogIn";
+    
+}
+
+<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'>
+<link href="~/Content/logInFormStyle.css" rel="stylesheet" />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="login-form">
+        @Html.ValidationSummary(true)
+        <h1 style="color: black">Employee Login</h1>
+        <div class="form-group ">
+            @Html.EditorFor(a => a.UserName, new {htmlAttributes = new {@class = "form-control", id = "UserName", PlaceHolder = "User Name"}})
+            @Html.ValidationMessageFor(a => a.UserName, "", new {@class = "text-danger"})
+            @Html.ValidationMessage("User")
+            <i class="fa fa-user"></i>
+        </div>
+        <div class="form-group log-status">
+            @Html.EditorFor(a => a.Password, new {htmlAttributes = new {@class = "form-control", id = "Passwod", PlaceHolder = "Password"}})
+            @Html.ValidationMessageFor(a => a.Password, "", new {@class = "text-danger"})
+            @Html.ValidationMessage("User")
+            <i class="fa fa-lock"></i>
+        </div>
+        <a class="link" href="#">Lost your password?</a>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input type="submit" value="Login" class="btn btn-primary btn-lg btn-block" />
+            </div>
+        </div>
+
+        </div>
+}
+
+@section Scripts{
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="~/Scripts/loginFormScript.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            var userName = $("#UserName").val();
+            var password = $("#Passwod").val();
+
+            
+             $("#UserName").focus(function () {
+                    $(".field-validation-error").remove();
+             });
+            $("#Passwod").focus(function() {
+                $(".field-validation-error").remove();
+            });
+
+
+        });
+    </script>
+}
+
