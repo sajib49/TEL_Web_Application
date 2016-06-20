@@ -125,7 +125,8 @@ namespace TEL_Web_App.Controllers
                 connection.Close();
             }
             
-            ViewBag.LeaveList = new SelectList(leaves, "LeaveType", "LeaveTypeName");
+            //ViewBag.LeaveList = new SelectList(leaves, "LeaveType", "LeaveTypeName");
+            ViewBag.LeaveList = leaves;
             ViewBag.LeaveReasonList = new SelectList(new[]
             {
                 new SelectListItem {Text = "Personal", Value = "1", Selected = true},
@@ -135,21 +136,20 @@ namespace TEL_Web_App.Controllers
                 new SelectListItem {Text = "Others", Value = "5"}
             }, "Text", "Text");
             ViewBag.aEmployee = aEmployee;
-            ViewBag.departmentWiseEmployees = new SelectList(FindEmployeesDepartmentWise(id), "EmployeeID", "EmployeeName");
+            //ViewBag.departmentWiseEmployees = new SelectList(FindEmployeesDepartmentWise(id), "EmployeeID", "EmployeeName");
+            ViewBag.departmentWiseEmployees = FindEmployeesDepartmentWise(id);
                 return View();
             }
 
         public List<Employee> FindEmployeesDepartmentWise(string id)
         { 
             List<Employee> employeeList = new List<Employee>();
-
-           
+            
             using (SqlConnection connection = new SqlConnection(Connection.ConnectionString()))
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("SELECT * FROM t_Employee WHERE DepartmentID IN (SELECT DepartmentID FROM t_Employee WHERE EmployeeID IN (SELECT EmployeeID From t_User WHERE UserName='" + id + "'))", connection))
                 {
-
                     using (SqlDataReader leaveReader = command.ExecuteReader())
                     {
                         while (leaveReader.Read())
@@ -197,34 +197,6 @@ namespace TEL_Web_App.Controllers
 
         }
 
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LeaveApplication(EmployeeLeave anEmployeeLeave)
-        {
-
-            //using (SqlConnection connection = new SqlConnection(Connection.ConnectionString()))
-            //{
-            //    connection.Open();
-            //    using (SqlCommand command = new SqlCommand("INSERT INTO t_EmployeeLeaveTemp VALUES('" + anEmployeeLeave. + "')", connection))
-            //    {
-
-            //        using (SqlDataReader leaveReader = command.ExecuteReader())
-            //        {
-            //            while (leaveReader.Read())
-            //            {
-            //                Employee aEmployee = new Employee();
-            //                aEmployee.EmployeeID = int.Parse(leaveReader["EmployeeID"].ToString());
-            //                aEmployee.EmployeeName = leaveReader["EmployeeName"].ToString();
-            //                employeeList.Add(aEmployee);
-            //            }
-            //        }
-            //        connection.Close();
-            //    }
-            //}
-
-            return View();
-        }
 
     }
 }

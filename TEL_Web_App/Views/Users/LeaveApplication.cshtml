@@ -21,7 +21,7 @@
         <table class="table">
             <tr>
                 <td><label>Employee Code </label></td>
-                <td class="employeeDetails">@ViewBag.aEmployee.EmployeeCode @*@Html.DisplayFor(model => model.EmployeeCode)*@</td>
+                <td class="employeeDetails">@Html.EditorFor(m => m.EmployeeLeave.EmployeeCode, new { htmlAttributes = new { @Value = ViewBag.aEmployee.EmployeeCode, @class = "form-control"}})</td>
                 <td><label>Designation </label></td>
                 <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.Designation @*@Html.DisplayFor(model=>model.Designation)*@</td>
             </tr>
@@ -35,10 +35,12 @@
 
             <tr>
                 <td><label>Leave Type</label></td>
-                <td>@Html.DropDownList("LeaveList", null, "---Select Leave Type---", htmlAttributes: new { @class = "form-control" })</td>
+                @*<td>@Html.DropDownList("LeaveList", null, "---Select Leave Type---", htmlAttributes: new { @class = "form-control" })</td>*@
+               <td>@Html.DropDownListFor(m => m.EmployeeLeave.LeaveType, new SelectList(ViewBag.LeaveList, "LeaveType", "LeaveTypeName"), "--Select Leave Type--",htmlAttributes: new { @class = "form-control" })</td>
                 <td><label>Reason</label></td>
-                <td>@Html.DropDownList("LeaveReasonList", null, "---Select Leave Reason---", htmlAttributes: new { @class = "form-control" })</td>
-                <td colspan="2"><input name="leaveNature" type="radio" />Full Day<input name="leaveNature" type="radio" />1st Half<input name="leaveNature" type="radio" />2nd Half</td>
+                @*<td>@Html.DropDownList("LeaveReasonList", null, "---Select Leave Reason---", htmlAttributes: new {@class = "form-control"})</td>*@
+                <td>@Html.DropDownListFor(m => m.EmployeeLeave.Reason, new SelectList(ViewBag.LeaveReasonList, "Text", "Text"),"--Select Leave Reason--",htmlAttributes: new { @class = "form-control" })</td>
+                   <td colspan="2"><input name="leaveNature" type="radio"/>Full Day<input name="leaveNature" type="radio" />1st Half<input name="leaveNature" type="radio" />2nd Half</td>
             </tr>
             <tr>
                 <td><label>Strat Date</label></td>
@@ -67,7 +69,7 @@
 
             <tr>
                 <td><label>Address</label></td>
-                <td colspan="5">@Html.EditorFor(model=>model.EmployeeLeave.Address, new{htmlAttributes=new{@class="form-control"}}) @*<input type="text" class="form-control"/*@> </td>
+                <td colspan="5">@Html.EditorFor(model=>model.EmployeeLeave.Address, new{htmlAttributes=new{@class="form-control"}})</td>
             </tr>
 
             <tr>
@@ -99,7 +101,7 @@
             <table class="table">
                 <tr>
                     <td><label>InCharge</label></td>
-                    <td>@Html.DropDownList("departmentWiseEmployees", null, "---Select In Charge---", htmlAttributes: new { @class = "form-control", id = "inChargeEmployee" })</td>
+                    <td>@Html.DropDownListFor(m => m.EmployeeLeave.InChargeID, new SelectList(ViewBag.departmentWiseEmployees, "EmployeeID", "EmployeeName"),null, htmlAttributes: new { @class = "form-control", id = "inChargeEmployee" })</td>
                     <td><label>Designation</label></td>
                     <td><input class="form-control" type="text" readonly id="employeeDesignation"/></td>
                 </tr>
@@ -128,7 +130,6 @@
 
 @section scripts
 {
-
     <script>
         $(document).ready(function() {
             $("#inChargeEmployee").change(function() {
