@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.EnterpriseServices;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using TEL_Web_App.Models;
 
@@ -84,50 +85,52 @@ namespace TEL_Web_App.Controllers
         
         public ActionResult LeaveApplication(string id)
         {
-            Employee aEmployee = new Employee();
-            List<Leave> leaves = new List<Leave>();
-
-            using (SqlConnection connection = new SqlConnection(Connection.ConnectionString()))
+            if (Session["LogedUserName"] != null && Session["LogedUserPassword"] != null)
             {
-                connection.Open();
-                using (SqlCommand command =new SqlCommand("SELECT EmployeeCode,EmployeeName,DesignationName,DepartmentName FROM t_User LEFT JOIN t_Employee ON t_User.EmployeeID = t_Employee.EmployeeID LEFT JOIN t_Department ON t_Employee.DepartmentID=t_Department.DepartmentID LEFT JOIN t_Designation ON t_Employee.DesignationID = t_Designation.DesignationID WHERE UserName='" +id + "'", connection))
+                Employee aEmployee = new Employee();
+                List<Leave> leaves = new List<Leave>();
+
+                using (SqlConnection connection = new SqlConnection(Connection.ConnectionString()))
                 {
-
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT EmployeeCode,EmployeeName,DesignationName,DepartmentName FROM t_User LEFT JOIN t_Employee ON t_User.EmployeeID = t_Employee.EmployeeID LEFT JOIN t_Department ON t_Employee.DepartmentID=t_Department.DepartmentID LEFT JOIN t_Designation ON t_Employee.DesignationID = t_Designation.DesignationID WHERE UserName='" + id + "'", connection))
                     {
-                        while (reader.Read())
-                        {
-                            aEmployee.EmployeeCode = reader["EmployeeCode"].ToString();
-                            aEmployee.EmployeeName = reader["EmployeeName"].ToString();
-                            aEmployee.Designation = reader["DesignationName"].ToString();
-                            aEmployee.Department = reader["DepartmentName"].ToString();
-                        }
-                    }
-                }
 
-
-                using (SqlCommand command = new SqlCommand("SELECT * FROM t_Leave", connection))
-                {
-                    using (SqlDataReader leaveReader = command.ExecuteReader())
-                    {
-                        while (leaveReader.Read())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            Leave aLeave = new Leave
+                            while (reader.Read())
                             {
-                                LeaveType = int.Parse(leaveReader["LeaveType"].ToString()),
-                                LeaveTypeName = leaveReader["LeaveTypeName"].ToString(),
-                                LeaveAllowed = int.Parse(leaveReader["LeaveAllowed"].ToString())
-                            };
-                            leaves.Add(aLeave);
+                                aEmployee.EmployeeCode = reader["EmployeeCode"].ToString();
+                                aEmployee.EmployeeName = reader["EmployeeName"].ToString();
+                                aEmployee.Designation = reader["DesignationName"].ToString();
+                                aEmployee.Department = reader["DepartmentName"].ToString();
+                            }
                         }
                     }
+
+
+                    using (SqlCommand command = new SqlCommand("SELECT * FROM t_Leave", connection))
+                    {
+                        using (SqlDataReader leaveReader = command.ExecuteReader())
+                        {
+                            while (leaveReader.Read())
+                            {
+                                Leave aLeave = new Leave
+                                {
+                                    LeaveType = int.Parse(leaveReader["LeaveType"].ToString()),
+                                    LeaveTypeName = leaveReader["LeaveTypeName"].ToString(),
+                                    LeaveAllowed = int.Parse(leaveReader["LeaveAllowed"].ToString())
+                                };
+                                leaves.Add(aLeave);
+                            }
+                        }
+                    }
+                    connection.Close();
                 }
-                connection.Close();
-            }
-            
-            //ViewBag.LeaveList = new SelectList(leaves, "LeaveType", "LeaveTypeName");
-            ViewBag.LeaveList = leaves;
-            ViewBag.LeaveReasonList = new SelectList(new[]
+
+                //ViewBag.LeaveList = new SelectList(leaves, "LeaveType", "LeaveTypeName");
+                ViewBag.LeaveList = leaves;
+                ViewBag.LeaveReasonList = new SelectList(new[]
             {
                 new SelectListItem {Text = "Personal", Value = "1", Selected = true},
                 new SelectListItem {Text = "Training", Value = "2"},
@@ -135,11 +138,64 @@ namespace TEL_Web_App.Controllers
                 new SelectListItem {Text = "Foreign Tour", Value = "4"},
                 new SelectListItem {Text = "Others", Value = "5"}
             }, "Text", "Text");
-            ViewBag.aEmployee = aEmployee;
-            //ViewBag.departmentWiseEmployees = new SelectList(FindEmployeesDepartmentWise(id), "EmployeeID", "EmployeeName");
-            ViewBag.departmentWiseEmployees = FindEmployeesDepartmentWise(id);
+                ViewBag.aEmployee = aEmployee;
+                //ViewBag.departmentWiseEmployees = new SelectList(FindEmployeesDepartmentWise(id), "EmployeeID", "EmployeeName");
+                ViewBag.departmentWiseEmployees = FindEmployeesDepartmentWise(id);
                 return View();
             }
+            else
+            {
+                return RedirectToAction("LogIn");
+            }
+               
+            }
+
+
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LeaveApplication(EmployeeLeave anEmployeeLeave)
+        {
+            
+            using (SqlConnection connection = new SqlConnection(Connection.ConnectionString()))
+            {
+                connection.Open();
+                Employee anEmployee =new Employee();
+                using (SqlCommand aCommand = new SqlCommand("SELECT EmployeeID FROM t_Employee WHERE EmployeeCode = '" + anEmployeeLeave.EmployeeCode + "' ", connection))
+                {
+                    using (SqlDataReader empIdReader = aCommand.ExecuteReader())
+                    {
+                        while (empIdReader.Read())
+                        {
+                            anEmployee.EmployeeID = int.Parse(empIdReader["EmployeeID"].ToString());
+                        }
+                    }
+                }
+                EmployeeLeave aEmployeeLeave = new EmployeeLeave();
+
+                using (SqlCommand aCommand = new SqlCommand("SELECT MAX(LeaveID)+1 AS LeaveID  FROM t_EmployeeLeaveTemp", connection))
+                {
+                    using (SqlDataReader empIdReader = aCommand.ExecuteReader())
+                    {
+                        while (empIdReader.Read())
+                        {
+                            aEmployeeLeave.LeaveID = int.Parse(empIdReader["LeaveID"].ToString());
+                        }
+                    }
+                }
+
+
+                using (SqlCommand command = new SqlCommand("INSERT INTO t_EmployeeLeaveTemp VALUES('" + aEmployeeLeave.LeaveID + "','" + anEmployee.EmployeeID + "','" + anEmployeeLeave.InChargeID + "','" + anEmployeeLeave.LeaveType + "','" + anEmployeeLeave.LeaveStartDate + "','" + anEmployeeLeave.LeaveEndDate + "',GETDATE(),'" + anEmployeeLeave.Reason + "','" + anEmployeeLeave.Address + "','" + anEmployeeLeave.MobileNo + "','" + anEmployeeLeave.Emailaddress + "','" + anEmployeeLeave.Status + "','" + anEmployeeLeave.LeaveTotal + "','" + anEmployeeLeave.PartialType + "',NULL,NULL,NULL,NULL,NULL,NULL,NULL)", connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            return View();
+        }
+
+        
+
 
         public List<Employee> FindEmployeesDepartmentWise(string id)
         { 
@@ -196,6 +252,7 @@ namespace TEL_Web_App.Controllers
             return Json(anEmployee, JsonRequestBehavior.AllowGet);
 
         }
+
 
 
     }

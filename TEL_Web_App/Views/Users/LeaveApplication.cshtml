@@ -1,4 +1,4 @@
-﻿@model TEL_Web_App.Models.AllModels
+﻿@model TEL_Web_App.Models.EmployeeLeave
 
 
 @{
@@ -11,7 +11,7 @@
         font-weight: bolder;
     }
 </style>
-
+@Html.ActionLink("Log Out", "LogOut", "Users")
 <h2 style="text-align: center">Leave Application</h2>
 
 @using (@Html.BeginForm())
@@ -21,9 +21,9 @@
         <table class="table">
             <tr>
                 <td><label>Employee Code </label></td>
-                <td class="employeeDetails">@Html.EditorFor(m => m.EmployeeLeave.EmployeeCode, new { htmlAttributes = new { @Value = ViewBag.aEmployee.EmployeeCode, @class = "form-control"}})</td>
+                <td class="employeeDetails">@Html.EditorFor(m => m.EmployeeCode, new { htmlAttributes = new { @Value = ViewBag.aEmployee.EmployeeCode, @class = "form-control"}})</td>
                 <td><label>Designation </label></td>
-                <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.Designation @*@Html.DisplayFor(model=>model.Designation)*@</td>
+                <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.Designation</td>
             </tr>
 
             <tr>
@@ -36,17 +36,16 @@
             <tr>
                 <td><label>Leave Type</label></td>
                 @*<td>@Html.DropDownList("LeaveList", null, "---Select Leave Type---", htmlAttributes: new { @class = "form-control" })</td>*@
-               <td>@Html.DropDownListFor(m => m.EmployeeLeave.LeaveType, new SelectList(ViewBag.LeaveList, "LeaveType", "LeaveTypeName"), "--Select Leave Type--",htmlAttributes: new { @class = "form-control" })</td>
+               <td>@Html.DropDownListFor(m => m.LeaveType, new SelectList(ViewBag.LeaveList, "LeaveType", "LeaveTypeName"), "--Select Leave Type--",htmlAttributes: new { @class = "form-control" })</td>
                 <td><label>Reason</label></td>
-                @*<td>@Html.DropDownList("LeaveReasonList", null, "---Select Leave Reason---", htmlAttributes: new {@class = "form-control"})</td>*@
-                <td>@Html.DropDownListFor(m => m.EmployeeLeave.Reason, new SelectList(ViewBag.LeaveReasonList, "Text", "Text"),"--Select Leave Reason--",htmlAttributes: new { @class = "form-control" })</td>
-                   <td colspan="2"><input name="leaveNature" type="radio"/>Full Day<input name="leaveNature" type="radio" />1st Half<input name="leaveNature" type="radio" />2nd Half</td>
+               <td>@Html.DropDownListFor(m => m.Reason, new SelectList(ViewBag.LeaveReasonList, "Text", "Text"),"<All>",htmlAttributes: new { @class = "form-control" })</td>
+               <td colspan="2">@Html.RadioButtonFor(m=>m.PartialType,0) Full Day @Html.RadioButtonFor(m => m.PartialType, 1) 1<sup>st</sup> Half @Html.RadioButtonFor(m => m.PartialType, 2) 2<sup>nd</sup> Half</td>
             </tr>
             <tr>
                 <td><label>Strat Date</label></td>
                 <td>
                     <div class="input-group date" data-provide="datepicker" id="datepicker">
-                       @Html.EditorFor(model => model.EmployeeLeave.LeaveStartDate, new { htmlAttributes = new { @id = "startDate", @class = "form-control" } })
+                       @Html.EditorFor(model => model.LeaveStartDate, new { htmlAttributes = new { @id = "startDate", @class = "form-control" } })
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar">
                             </span>
@@ -56,7 +55,7 @@
                 <td><label>End Date</label></td>
                 <td>
                     <div class="input-group date" data-provide="datepicker" id="datepicker">
-                        @Html.EditorFor(model => model.EmployeeLeave.LeaveStartDate, new { htmlAttributes = new { @id = "endDate", @class = "form-control" } })  @*<input type='text' class="form-control" id="endDate">*@
+                        @Html.EditorFor(model => model.LeaveStartDate, new { htmlAttributes = new { @id = "endDate", @class = "form-control" } })  @*<input type='text' class="form-control" id="endDate">*@
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar">
                             </span>
@@ -64,19 +63,21 @@
                     </div>
                 </td>
                 <td><label>Number of Days: </label></td>
-                <td>@Html.EditorFor(model => model.EmployeeLeave.LeaveEndDate, new { htmlAttributes = new { @class="form-control",@id = "noOfDays", disabled = "disabled", @readonly = "readonly" } })@*<input type="text" class="form-control" readonly id="noOfDays"/>*@</td>
+                <td>@Html.EditorFor(model => model.LeaveEndDate, new { htmlAttributes = new { @class="form-control",@id = "noOfDays", @readonly = "readonly" } })@*<input type="text" class="form-control" readonly id="noOfDays"/>*@</td>
             </tr>
 
             <tr>
                 <td><label>Address</label></td>
-                <td colspan="5">@Html.EditorFor(model=>model.EmployeeLeave.Address, new{htmlAttributes=new{@class="form-control"}})</td>
+                <td colspan="5">@Html.EditorFor(model=>model.Address, new{htmlAttributes=new{@class="form-control"}})
+                @Html.ValidationMessageFor(m=>m.Address)
+                </td>
             </tr>
 
             <tr>
                 <td><label>Mobile No </label></td>
-                <td> @Html.EditorFor(model => model.EmployeeLeave.MobileNo, new { htmlAttributes = new { @class = "form-control" } }) @*<input type="text" class="form-control" />*@</td>
+                <td> @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control" } })</td>
                 <td><label>Email Address </label></td>
-                <td colspan="3"> @Html.EditorFor(model => model.EmployeeLeave.Emailaddress, new { htmlAttributes = new { @class = "form-control" } }) @*<input type="text" class="form-control" />*@</td>
+                <td colspan="3"> @Html.EditorFor(model => model.Emailaddress, new { htmlAttributes = new { @class = "form-control" }})</td>
             </tr>
         </table>
 
@@ -101,7 +102,7 @@
             <table class="table">
                 <tr>
                     <td><label>InCharge</label></td>
-                    <td>@Html.DropDownListFor(m => m.EmployeeLeave.InChargeID, new SelectList(ViewBag.departmentWiseEmployees, "EmployeeID", "EmployeeName"),null, htmlAttributes: new { @class = "form-control", id = "inChargeEmployee" })</td>
+                    <td>@Html.DropDownListFor(m => m.InChargeID, new SelectList(ViewBag.departmentWiseEmployees, "EmployeeID", "EmployeeName"),null, htmlAttributes: new { @class = "form-control", id = "inChargeEmployee" })</td>
                     <td><label>Designation</label></td>
                     <td><input class="form-control" type="text" readonly id="employeeDesignation"/></td>
                 </tr>

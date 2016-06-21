@@ -9,6 +9,7 @@ namespace TEL_Web_App.Models
     public class EmployeeLeave
     {
         public int LeaveID { get; set; }
+        public int PartialType { get; set; }
         public int EmployeeID { get; set; }
         [Required]
         public string EmployeeCode { get; set; }
