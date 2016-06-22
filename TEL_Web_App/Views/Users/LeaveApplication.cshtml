@@ -11,8 +11,8 @@
         font-weight: bolder;
     }
 </style>
-@Html.ActionLink("Log Out", "LogOut", "Users")
-<h2 style="text-align: center">Leave Application</h2>
+@Html.ActionLink("Log Out", "LogOut", "Users", new { @style = "color:white;text-align: right" })
+<h2 style="text-align: center" >Leave Application</h2>
 
 @using (@Html.BeginForm())
 {
@@ -28,9 +28,9 @@
 
             <tr>
                 <td><label>Employee Name </label></td>
-                <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.EmployeeName @*@Html.DisplayFor(model => model.EmployeeName)*@</td>
+                <td colspan="3" class="employeeDetails">@ViewBag.aEmployee.EmployeeName </td>
                 <td><label>Department </label></td>
-                <td class="employeeDetails">@ViewBag.aEmployee.Department @*@Html.DisplayFor(model => model.Department*@</td>
+                <td class="employeeDetails">@ViewBag.aEmployee.Department</td>
             </tr>
 
             <tr>
@@ -188,7 +188,6 @@
                  var startDate = new Date(d1);
                  var endDate = new Date(d2);
                  var numOfDays = getBusinessDatesCount(startDate, endDate);
-                 //alert(numOfDays);
                  $("#noOfDays").val(numOfDays);
              });
 
